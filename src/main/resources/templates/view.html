@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Product List</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+<body class="bg-gray-100 min-h-screen p-6">
+
+	<div class="max-w-6xl mx-auto bg-white shadow-xl rounded-2xl p-6">
+
+		<!-- 🔍 SEARCH BAR -->
+		<form th:action="@{/view}" method="get" class="mb-6 flex gap-2">
+
+			<input type="text" name="keyword" th:value="${keyword}"
+				placeholder="Search product..."
+				class="border p-2 rounded-lg w-full focus:ring-2 focus:ring-blue-400 outline-none">
+
+			<button type="submit"
+				class="bg-blue-500 text-white px-5 rounded-lg hover:bg-blue-600 transition">
+				Search</button>
+
+		</form>
+
+		<!-- HEADER -->
+		<div class="flex justify-between items-center mb-6">
+			<h2 class="text-2xl font-bold text-gray-700">Product List</h2>
+
+			<a th:href="@{/}"
+				class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition">
+				+ Add Product </a>
+		</div>
+
+		<!-- TABLE -->
+		<div class="overflow-x-auto">
+			<table class="w-full border rounded-lg overflow-hidden">
+
+				<thead class="bg-gray-200 text-gray-700">
+					<tr>
+						<th class="p-3">ID</th>
+						<th class="p-3">Name</th>
+						<th class="p-3">Price</th>
+						<th class="p-3">Quantity</th>
+						<th class="p-3 text-center">Actions</th>
+					</tr>
+				</thead>
+
+				<tbody>
+					<tr th:each="product : ${productList}"
+						class="border-b hover:bg-gray-50">
+
+						<td class="p-3" th:text="${product.productId}"></td>
+						<td class="p-3" th:text="${product.productName}"></td>
+						<td class="p-3" th:text="${product.productPrice}"></td>
+						<td class="p-3" th:text="${product.productQuantity}"></td>
+
+						<td class="p-3 text-center space-x-2">
+							<!-- EDIT --> <a th:href="@{/edit(pid=${product.productId})}"
+							class="bg-yellow-400 text-white px-3 py-1 rounded-lg hover:bg-yellow-500 text-sm">
+								Edit </a> <!-- DELETE --> <a
+							th:href="@{/delete(pid=${product.productId})}"
+							class="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 text-sm"
+							onclick="return confirm('Are you sure?')"> Delete </a>
+
+						</td>
+
+					</tr>
+
+					<!-- NO DATA -->
+					<tr th:if="${#lists.isEmpty(productList)}">
+						<td colspan="5" class="text-center p-4 text-gray-500">
+							Product Not found</td>
+					</tr>
+
+				</tbody>
+
+			</table>
+		</div>
+
+		<!-- 🔢 PAGINATION -->
+		<div class="flex justify-center items-center mt-6 gap-3">
+
+			<!-- PREV -->
+			<a th:if="${currentPage != null and currentPage > 0}"
+				th:href="@{/view(page=${currentPage - 1}, keyword=${keyword})}"
+				class="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400"> Prev
+			</a>
+
+			<!-- CURRENT PAGE -->
+			<span class="px-4 py-2 bg-blue-500 text-white rounded-lg"
+				th:text="${currentPage + 1}"></span>
+
+			<!-- NEXT -->
+			<a th:if="${currentPage != null and currentPage < totalPages - 1}"
+				th:href="@{/view(page=${currentPage + 1}, keyword=${keyword})}"
+				class="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400"> Next
+			</a>
+
+		</div>
+
+	</div>
+
+</body>
+</html>
